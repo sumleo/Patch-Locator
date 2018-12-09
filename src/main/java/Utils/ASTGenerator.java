@@ -57,12 +57,11 @@ public class ASTGenerator {
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
             String reloadPar = "";
             for (Object parm : methodDeclaration.parameters()) {
-                reloadPar += parm.toString() + ",";
+                reloadPar += parm.toString() + "|";
             }
-            String positionLine = String.format("StartLineNum:%d, ENDLINE:%d, Length:%d",
+            String positionLine = String.format("%d,%d",
                     compilationUnit.getLineNumber(methodDeclaration.getStartPosition()) - 1,
-                    compilationUnit.getLineNumber(methodDeclaration.getStartPosition() + methodDeclaration.getLength()) - 1,
-                    methodDeclaration.getLength()
+                    compilationUnit.getLineNumber(methodDeclaration.getStartPosition() + methodDeclaration.getLength()) - 1
             );
             if (methodDeclaration.getBody() == null) {
                 messageDigest.update((methodDeclaration.getName() + ":" + reloadPar).getBytes());

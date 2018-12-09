@@ -8,12 +8,14 @@ import java.util.*;
 public class DifferService {
     public static ArrayList<ASTDiffer> astDiffers = new ArrayList<ASTDiffer>();
     public static Set<String> nonExistDirs = new HashSet<String>();
+    public static HashMap<String, String> pathToClassName;
 
     public static void differ(String basePath) throws Exception {
         //Init for set up
         InitService.init();
         GetModifiedClasses getModifiedClasses = new GetModifiedClasses();
         getModifiedClasses.processModifiedClasses();
+        pathToClassName = getModifiedClasses.getFullClassesName();
         HashMap<String, LinkedList<String>> modifiedClassesWithVersion = getModifiedClasses.getModifiedClasses();
         //Version for source code
         Set<String> versions = modifiedClassesWithVersion.keySet();
@@ -34,11 +36,11 @@ public class DifferService {
                 }
                 String bugAbsPath = PathMatcher.match(bugVersionDir, modifiedClass);
                 String fixedAbsPath = PathMatcher.match(fixedVersionDir, modifiedClass);
-                ASTGenerator bugGen=new ASTGenerator();
-                ASTGenerator fixedGen=new ASTGenerator();
+                ASTGenerator bugGen = new ASTGenerator();
+                ASTGenerator fixedGen = new ASTGenerator();
                 HashMap<String, String> bugMethods = bugGen.getMethodsAndBody(bugAbsPath);
                 HashMap<String, String> fixedMethods = fixedGen.getMethodsAndBody(fixedAbsPath);
-                ASTDiffer astDiffer = new ASTDiffer(bugAbsPath, fixedAbsPath);
+                ASTDiffer astDiffer = new ASTDiffer(pathToClassName.get(modifiedClass), pathToClassName.get(modifiedClass));
                 astDiffer.process(bugMethods, fixedMethods);
                 astDiffer.setVersion(version);
                 astDiffer.setPositions(fixedGen.getPositions());

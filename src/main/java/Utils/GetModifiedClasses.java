@@ -10,6 +10,11 @@ import java.util.LinkedList;
 
 public class GetModifiedClasses {
     private HashMap<String, LinkedList<String>> modifiedClasses = new HashMap<String, LinkedList<String>>();
+    private HashMap<String,String> fullClassesName=new HashMap<String, String>();
+
+    public HashMap<String, String> getFullClassesName() {
+        return fullClassesName;
+    }
 
     public HashMap<String, LinkedList<String>> getModifiedClasses() {
         return modifiedClasses;
@@ -43,9 +48,12 @@ public class GetModifiedClasses {
             LinkedList<String> paths = new LinkedList<String>();
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                paths.add(line.replace(".", File.separator)+CONSTANT.JAVA_SUFFIX);
+                String filePath=line.replace(".", File.separator)+CONSTANT.JAVA_SUFFIX;
+                fullClassesName.put(filePath,line);
+                paths.add(filePath);
             }
             this.modifiedClasses.put(version, paths);
         }
     }
+
 }
