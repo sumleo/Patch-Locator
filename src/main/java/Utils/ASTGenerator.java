@@ -42,8 +42,12 @@ public class ASTGenerator {
         TypeDeclaration typeDeclaration = (TypeDeclaration) typesDeclared.get(0);
         MethodDeclaration[] methodDeclarations = typeDeclaration.getMethods();
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
-            messageDigest.update(methodDeclaration.getBody().toString().getBytes());
-            results.put(methodDeclaration.getName().toString(), new BigInteger(1,messageDigest.digest()).toString(16));
+            try {
+                messageDigest.update(methodDeclaration.getBody().toString().getBytes());
+                results.put(methodDeclaration.getName().toString(), new BigInteger(1, messageDigest.digest()).toString(16));
+            }catch (Exception e){
+                
+            }
         }
         return results;
     }
