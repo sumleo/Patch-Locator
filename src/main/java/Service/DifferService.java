@@ -43,7 +43,7 @@ public class DifferService {
                 ASTDiffer astDiffer = new ASTDiffer(pathToClassName.get(modifiedClass), pathToClassName.get(modifiedClass));
                 astDiffer.process(bugMethods, fixedMethods);
                 astDiffer.setVersion(version);
-                astDiffer.setPositions(fixedGen.getPositions());
+                astDiffer.setPositions(bugGen.getPositions());
                 astDiffers.add(astDiffer);
             }
         }
