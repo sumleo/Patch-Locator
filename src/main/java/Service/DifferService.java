@@ -34,11 +34,14 @@ public class DifferService {
                 }
                 String bugAbsPath = PathMatcher.match(bugVersionDir, modifiedClass);
                 String fixedAbsPath = PathMatcher.match(fixedVersionDir, modifiedClass);
-                HashMap<String, String> bugMethods = ASTGenerator.getMethodsAndBody(bugAbsPath);
-                HashMap<String, String> fixedMethods = ASTGenerator.getMethodsAndBody(fixedAbsPath);
+                ASTGenerator bugGen=new ASTGenerator();
+                ASTGenerator fixedGen=new ASTGenerator();
+                HashMap<String, String> bugMethods = bugGen.getMethodsAndBody(bugAbsPath);
+                HashMap<String, String> fixedMethods = fixedGen.getMethodsAndBody(fixedAbsPath);
                 ASTDiffer astDiffer = new ASTDiffer(bugAbsPath, fixedAbsPath);
                 astDiffer.process(bugMethods, fixedMethods);
                 astDiffer.setVersion(version);
+                astDiffer.setPositions(fixedGen.getPositions());
                 astDiffers.add(astDiffer);
             }
         }

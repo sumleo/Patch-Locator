@@ -25,27 +25,30 @@ public class ASTGeneratorTest {
                 "        astParser.setSource(\"public class ASTGenerator {}\".toCharArray());\n" +
                 "    }\n" +
                 "}\n";
-        ASTGenerator.genResult(code);
+        ASTGenerator a = new ASTGenerator();
+        a.genResult(code);
     }
 
     @Test
     public void testReadFile() {
-        System.out.println(ASTGenerator.loadFile("/Users/liuyi/IdeaProjects/patchlocator/src/main/java/Utils/ASTGenerator.java"));
+        ASTGenerator a = new ASTGenerator();
+        System.out.println(a.loadFile("/Users/liuyi/IdeaProjects/patchlocator/src/main/java/Utils/ASTGenerator.java"));
     }
 
     @Test
     public void testDifferentClass() throws Exception {
         String testA = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/Utils/TestA.java";
         String testB = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/Utils/TestB.java";
-        HashMap<String, String> hashMapA = ASTGenerator.getMethodsAndBody(testA);
-        HashMap<String, String> hashMapB = ASTGenerator.getMethodsAndBody(testB);
-
-        for (String name : hashMapA.keySet()) {
-            System.out.printf("%s %s \n", name, hashMapA.get(name));
+        ASTGenerator a = new ASTGenerator();
+        ASTGenerator b = new ASTGenerator();
+        HashMap<String, String> hashA = a.getMethodsAndBody(testA);
+        HashMap<String, String> hashB = b.getMethodsAndBody(testB);
+        for (String name : hashA.keySet()) {
+            System.out.printf("%s %s \n", name, hashA.get(name));
         }
         System.out.println("After");
-        for (String name : hashMapB.keySet()) {
-            System.out.printf("%s %s \n", name, hashMapB.get(name));
+        for (String name : hashB.keySet()) {
+            System.out.printf("%s %s \n", name, hashB.get(name));
         }
     }
 
@@ -54,9 +57,42 @@ public class ASTGeneratorTest {
         String testA = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/Utils/TestA.java";
         String testB = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/Utils/TestB.java";
         ASTDiffer astDiffer = new ASTDiffer(testA, testB);
-        HashMap<String,String> hashA=ASTGenerator.getMethodsAndBody(testA);
-        HashMap<String,String> hashB=ASTGenerator.getMethodsAndBody(testB);
-        astDiffer.process(hashA,hashB);
+        ASTGenerator a = new ASTGenerator();
+        ASTGenerator b = new ASTGenerator();
+        HashMap<String, String> hashA = a.getMethodsAndBody(testA);
+        HashMap<String, String> hashB = b.getMethodsAndBody(testB);  astDiffer.process(hashA, hashB);
+        List<String> modifiedMethods = astDiffer.getModifiedMethods();
+        List<String> newAddedMethods = astDiffer.getNewAddedMethods();
+        List<String> removedMethods = astDiffer.getRemovedMethods();
+        List<String> unmodifiedMethods = astDiffer.getUnmodifiedMethods();
+        System.out.println("ModifiedMethods");
+        for (String method : modifiedMethods) {
+            System.out.println(method);
+        }
+        System.out.println("newAddedMethods");
+        for (String method : newAddedMethods) {
+            System.out.println(method);
+        }
+        System.out.println("removedMethods");
+        for (String method : removedMethods) {
+            System.out.println(method);
+        }
+        System.out.println("unmodifiedMethods");
+        for (String method : unmodifiedMethods) {
+            System.out.println(method);
+        }
+    }
+
+    @Test
+    public void testASTDifferConstructor() throws Exception {
+        String testA = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/Utils/TestA.java";
+        String testB = "/Users/liuyi/IdeaProjects/patchlocator/src/test/java/testDifferenName/TestA.java";
+        ASTDiffer astDiffer = new ASTDiffer(testA, testB);
+        ASTGenerator a = new ASTGenerator();
+        ASTGenerator b = new ASTGenerator();
+        HashMap<String, String> hashA = a.getMethodsAndBody(testA);
+        HashMap<String, String> hashB = b.getMethodsAndBody(testB);
+        astDiffer.process(hashA, hashB);
         List<String> modifiedMethods = astDiffer.getModifiedMethods();
         List<String> newAddedMethods = astDiffer.getNewAddedMethods();
         List<String> removedMethods = astDiffer.getRemovedMethods();

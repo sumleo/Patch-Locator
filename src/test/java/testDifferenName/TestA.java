@@ -1,4 +1,4 @@
-package Utils;
+package testDifferenName;
 
 public class TestA {
     private String name;
@@ -10,12 +10,20 @@ public class TestA {
     }
 
     public TestA() {
-        System.out.println(1);
+        System.out.println();
     }
+
+    public TestA(String str){
+        System.out.println(str);
+    }
+
 
     public void setName(String name) {
         String a = "1";
         this.name = name;
+    }
+    public int getAgeX(String a,String b) {
+        return age;
     }
 
     public int getAge() {

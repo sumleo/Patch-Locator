@@ -1,6 +1,7 @@
 package Utils;
 
 import org.eclipse.jdt.core.dom.*;
+import org.w3c.dom.NodeList;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -12,13 +13,23 @@ import java.util.List;
  * This is generate AST for a single .java file
  */
 public class ASTGenerator {
+    private HashMap<String, String> positions = new HashMap<String, String>();
+
+    public HashMap<String, String> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(HashMap<String, String> positions) {
+        this.positions = positions;
+    }
+
     /**
      * Entry of The class
      *
      * @param fileName
      * @return
      */
-    public static HashMap getMethodsAndBody(String fileName) throws Exception {
+    public HashMap getMethodsAndBody(String fileName) throws Exception {
         String code = loadFile(fileName);
         return genResult(code);
     }
@@ -29,10 +40,12 @@ public class ASTGenerator {
      * @param code
      * @return
      */
-    protected static HashMap genResult(String code) throws Exception {
+    protected HashMap genResult(String code) throws Exception {
         //Init md5 encrypt
-        MessageDigest messageDigest=MessageDigest.getInstance("MD5");
+        MessageDigest messageDigest = MessageDigest.getInstance("MD5");
         ASTParser astParser = ASTParser.newParser(AST.JLS3);
+        astParser.setKind(ASTParser.K_COMPILATION_UNIT);
+        astParser.setResolveBindings(true);
         astParser.setSource(code.toCharArray());
         HashMap<String, String> results = new HashMap<String, String>();
         //This will generate the AST for Java File
@@ -42,13 +55,25 @@ public class ASTGenerator {
         TypeDeclaration typeDeclaration = (TypeDeclaration) typesDeclared.get(0);
         MethodDeclaration[] methodDeclarations = typeDeclaration.getMethods();
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
-            try {
-                messageDigest.update(methodDeclaration.getBody().toString().getBytes());
-                results.put(methodDeclaration.getName().toString(), new BigInteger(1, messageDigest.digest()).toString(16));
-            }catch (Exception e){
-                
+            String reloadPar = "";
+            for (Object parm : methodDeclaration.parameters()) {
+                reloadPar += parm.toString() + ",";
             }
+            String positionLine = String.format("StartLineNum:%d, ENDLINE:%d, Length:%d",
+                    compilationUnit.getLineNumber(methodDeclaration.getStartPosition()) - 1,
+                    compilationUnit.getLineNumber(methodDeclaration.getStartPosition() + methodDeclaration.getLength()) - 1,
+                    methodDeclaration.getLength()
+            );
+            if (methodDeclaration.getBody() == null) {
+                messageDigest.update((methodDeclaration.getName() + ":" + reloadPar).getBytes());
+                results.put(methodDeclaration.getName() + ":" + reloadPar, new BigInteger(1, messageDigest.digest()).toString(16));
+            } else {
+                messageDigest.update((methodDeclaration.getBody().toString()).getBytes());
+                results.put(methodDeclaration.getName() + ":" + reloadPar, new BigInteger(1, messageDigest.digest()).toString(16));
+            }
+            this.positions.put(methodDeclaration.getName() + ":" + reloadPar, positionLine);
         }
+
         return results;
     }
 
@@ -58,7 +83,7 @@ public class ASTGenerator {
      * @param fileName
      * @return
      */
-    protected static String loadFile(String fileName) {
+    protected String loadFile(String fileName) {
         String code = "";
         try {
             File file = new File(fileName);

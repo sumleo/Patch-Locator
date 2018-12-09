@@ -5,6 +5,7 @@ import Utils.Config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Bootstrap {
@@ -24,14 +25,15 @@ public class Bootstrap {
             String projectID = Config.prop.getProperty("projectID");
             List<String> modifiedMethods = astDiffer.getModifiedMethods();
             List<String> removedMethods = astDiffer.getRemovedMethods();
+            HashMap<String,String> fixedPositions=astDiffer.getPositions();
             String className = astDiffer.getOriginalClassPath().substring(astDiffer.getOriginalClassPath().lastIndexOf(File.separator) + 1);
             for (String modified : modifiedMethods
             ) {
-                System.out.printf("%s %s %s %s CHANGED\n", projectID, version, className, modified);
+                System.out.printf("%s %s %s %s %s CHANGED\n", projectID, version, className, modified,fixedPositions.get(modified));
             }
             for (String remove : removedMethods
             ) {
-                System.out.printf("%s %s %s %s REMOVED\n", projectID, version, className, remove);
+                System.out.printf("%s %s %s %s REMOVED\n", projectID, version, className, remove,fixedPositions.get(remove));
             }
         }
     }

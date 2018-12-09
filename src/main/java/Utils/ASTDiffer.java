@@ -14,6 +14,7 @@ public class ASTDiffer {
     private List<String> newAddedMethods = new LinkedList<String>();
     private HashMap<String, String> originalClassMethods = new HashMap<String, String>();
     private HashMap<String, String> modifiedClassMethods = new HashMap<String, String>();
+    private HashMap<String, String> positions = new HashMap<String, String>();
 
 
     /**
@@ -27,6 +28,14 @@ public class ASTDiffer {
         this.modifiedClassPath = modifiedClassPath;
     }
 
+
+    public HashMap<String, String> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(HashMap<String, String> positions) {
+        this.positions = positions;
+    }
 
     public String getOriginalClassPath() {
         return originalClassPath;
