@@ -39,7 +39,7 @@ public class Bootstrap {
                     methodNameAndParamters[0] = modified.split(":")[0];
                     methodNameAndParamters[1] = "";
                 }
-                System.out.printf("%s,%s,%s,%s,%s,%s,CHANGED\n", projectID, version, astDiffer.getOriginalClassPath(), methodNameAndParamters[0], methodNameAndParamters[1], fixedPositions.get(modified));
+                System.out.printf("%s,%s,%s,%s,%s,%s,CHANGED\n", projectID, version, astDiffer.getOriginalClassPath(), methodNameAndParamters[0], methodNameAndParamters[1].replace(",", ""), fixedPositions.get(modified));
             }
             for (String remove : removedMethods
             ) {
